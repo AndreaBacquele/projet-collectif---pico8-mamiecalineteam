@@ -4,16 +4,21 @@ __lua__
 --init
 
 function _init()
+	create_player()
 	init_menu()
 	scene="menu"
 		
 end
 
 function _draw()
+	player_mouvement()
+	update_camera()
 	
 end
 
 function _uptade()
+	draw_map()
+    draw_player()
 	
 end
 
@@ -24,10 +29,102 @@ end
 
 -->8
 --player
+ 
+function create_player()
+    p={
+    x=4,
+    y=4,
+    sprite=1,
+    speed=1,
+    flower=0,
+    vgr=0
+    }
+end
+
+function draw_player()
+ spr(p.sprite,p.x*8,p.y*8,2,2)
+end
+
+function player_mouvement()
+    newx=p.x
+    newy=p.y
+	if (btnp(⬆️)) newy-=p.speed
+	if (btnp(⬇️)) newy+=p.speed
+	if (btnp(⬅️)) newx-=p.speed
+	if (btnp(➡️)) newx+=p.speed
+
+    interact(newx, newy)
+    --a ajuster en fonction de la taille de la map (voir si ajout d'un son quand on rencontre un obstacle)
+    if not check_flag4(0,newx,newy) then
+        p.x=mid(0,newx,127)
+        p.y=mid(0,newy,63)
+    --ajout else sfx(numero du son)
+    end
+end
+
+function interact(x,y)
+    if check_flag(1,x,y) then
+        pick_up_flower(x,y)
+    end
+    if check_flag(1,x+1,y) then
+        pick_up_flower(x+1,y)
+    end
+    if check_flag(1,x,y+1) then
+        pick_up_flower(x,y+1)
+    end
+    if check_flag(1,x+1,y+1) then
+        pick_up_flower(x+1,y+1)
+    end
 -->8
 --dialogues
 -->8
 --map
+
+function draw_map()
+    map(0,0,0,0,128,64)
+    end
+    
+function update_camera()
+	local camx=mid(0,p.x-7.5,127-15) 
+	local camy=mid(0,p.y-7.5,63-15)
+	--position ou se pose la camera
+ camera(camx*8,camy*8)
+end
+
+ --permet de vれたrifier si on peut marcher ou s'il y a un objet- renvoie true or false
+function check_flag(flag,x,y)
+    local sprite=mget(x,y,w,h)
+    return	fget(sprite,flag)
+   end
+
+function check_flag4(flag,x,y)
+    local sprite1=mget(x,y)
+    local sprite2=mget(x+1,y)
+    local sprite3=mget(x,y+1)
+    local sprite4=mget(x+1,y+1)
+    local check=fget(sprite1,flag) or fget(sprite2,flag) or fget(sprite3,flag) or fget(sprite4,flag)
+    return check
+        
+end
+
+--permet de modifier un bout de map apres avoir ramasse un objet
+function next_tile(x,y)
+	local sprite=mget(x,y)
+	mset(x,y,sprite+1)
+end 
+
+--permet de ramasser l'objet (penser れき rajouter un son sfx() )
+function pick_up_flower(x,y)
+ next_tile(x,y)
+ p.flower+=1
+ 
+end
+
+function pick_up_vgr(x,y)
+ next_tile(x,y)
+ p.vgr+=1
+
+end
 -->8
 
 -->8
@@ -72,6 +169,10 @@ function uptade_menu()
 	end
 
 end
+
+end
+
+
 __gfx__
 000000000007700000000000000077000000000000077000000000000007700000000000000770000000000000000000cccccccccccccccccccccccccccccccc
 000000000007277777000000000072777770000000072777770004000007277777000000000727777700000000000000cccccccccccc21cccccccccccccccccc
