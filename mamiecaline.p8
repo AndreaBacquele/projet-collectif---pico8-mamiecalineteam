@@ -11,19 +11,20 @@ function _init()
 end
 
 function _draw()
-	player_mouvement()
-	update_camera()
+	draw_map()
+ draw_player()
 	
 end
 
 function _uptade()
-	draw_map()
-    draw_player()
+ player_mouvement()
+	update_camera()
+	
 	
 end
 
 function init_game()
-			_uptade = uptade_game
+		_uptade = uptade_game
 		_draw = draw_game
 end
 
@@ -75,6 +76,7 @@ function interact(x,y)
     if check_flag(1,x+1,y+1) then
         pick_up_flower(x+1,y+1)
     end
+end
 -->8
 --dialogues
 -->8
@@ -167,8 +169,6 @@ function uptade_menu()
  if btnp(❎) then 
 		init_game()
 	end
-
-end
 
 end
 
