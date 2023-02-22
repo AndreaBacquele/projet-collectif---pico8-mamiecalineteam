@@ -6,9 +6,7 @@ __lua__
 function _init()
 	init_menu()
 	scene="menu"
-	
-	-- coucou seb et andrea
-	
+		
 end
 
 function _draw()
