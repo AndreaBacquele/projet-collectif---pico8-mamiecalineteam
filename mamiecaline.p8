@@ -9,6 +9,7 @@ function _init()
 end
 
 function _draw()
+draw_ui()
 	
 end
 
@@ -150,6 +151,14 @@ function pick_up_vgr(x,y)
 end
 -->8
 --messages in game
+--ui
+
+--afficher compteur de fleurs
+function draw_ui()
+	camera()
+	spr(58,2,2)
+	print("x"..p.flower,10,2,7)
+end
 
 function init_msg()
 	messages={}
@@ -180,8 +189,8 @@ local screen_flip_interval = 0.5
 function mainmenu1()
     cls()
 	map(32,0)
-	print("press ❎ to",75,42,0)
-    print("leave the house",65,50,0)
+	print("press ❎ to",75,42,7)
+    print("leave the house",65,50,7)
 end
 
 function mainmenu2()
