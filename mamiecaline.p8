@@ -103,14 +103,49 @@ function interact(x,y)
         pick_up_flower(x+1,y+1)
     end
     if x==4 and y==6 and not pan1_read then
-    	create_msg("distributeur de disquettes","je suis pas un genie mais je peux\nfaire de tes reves une realite")
+    	create_msg("match un vieux.com","finito le tricot\nil est temps de pecho")
     	pan1_read = true
     end
     if x==7 and y==3 and not pan2_read then
-    	create_msg("panneau","que tal?")
+    	create_msg("match un vieux.com","pour pecho les vieux du coin,\nne vient pas les mains vides")
     	pan2_read = true
     end
+    if x==13 and y==6 and not pan3_read then
+    	create_msg("disquettes a la demande","l'♥ ne tient qu'a un fil,\nfais-en un pull.")
+    	pan3_read = true
+    end
+    
+    if x==20 and y==18 and not pan4_read then
+    	create_msg("disquettes a la demande","tu sortirais pas du frigo ?\npcq t'es trop fraiche!")
+    	pan4_read = true
+    end
+    
+     if x==23 and y==22 and not pan5_read then
+    	create_msg("match un vieux.com","trouve la pillule bleue pour\nfaire chauffer le moteur")
+    	pan5_read = true
+    end
+    
+     if x==6 and y==22 and not pan6_read then
+    	create_msg("match un vieux.com","vous pouvez aussi, essayer de\nle dire avec des fleurs")
+    	pan6_read = true
+    end
+    
+    if x==11 and y==18 and not pan7_read then
+    	create_msg("match un vieux.com","vous connaissez les nudes ?")
+    	pan7_read = true
+    end
+    
+     if x==16 and y==30 and not pan8_read then
+    	create_msg("match un vieux.com","en amour, parfois,\nil faut se jeter a l'eau")
+    	pan8_read = true
+    end
+    
+    if x==2 and y==20 and not pan9_read then
+    	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
+    	pan8_read = true
+    end
 end
+
 -->8
 --dialogues
 
@@ -183,6 +218,7 @@ function update_msg()
 end
 
 function draw_msg()
+camera()
 	if messages[1] then
 		local y=100
 		--titre
