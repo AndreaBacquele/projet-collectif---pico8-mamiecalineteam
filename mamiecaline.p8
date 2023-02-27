@@ -4,8 +4,7 @@ __lua__
 --init
 
 function _init()
-	init_menu()
-		
+	init_menu()	
 end
 
 function _draw()
@@ -20,7 +19,9 @@ end
 function init_game()
 		create_player()
 		init_msg()
+
 		music(0)
+
 end
 
 
@@ -31,6 +32,7 @@ function draw_game()
  draw_msg()
  draw_ui_flower()
  draw_ui_vgr()
+ dtb_draw()
 	
 end
 
@@ -40,6 +42,7 @@ function update_game()
 	end
 	update_camera()
 	update_msg()
+	dtb_update()
 end
 
 -->8
@@ -117,13 +120,11 @@ function interact(x,y)
     if check_flag(2,x+1,y+1) then
         pick_up_vgr(x+1,y+1)
     end
-    if x==4 and y==6 and not pan1_read then
+    if x==4 and y==6 then
     	create_msg("match un vieux.com","finito le tricot\nil est temps de pecho")
-    	pan1_read = true
     end
     if x==7 and y==3 and not pan2_read then
     	create_msg("match un vieux.com","pour pecho les vieux du coin,\nne vient pas les mains vides")
-    	pan2_read = true
     end
     if x==13 and y==6 and not pan3_read then
     	create_msg("disquettes a la demande","l'♥ ne tient qu'a un fil,\nfais-en un pull.")
@@ -159,6 +160,14 @@ function interact(x,y)
     	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
     	pan8_read = true
     end
+    --dialogue papie
+    if x==11 and y==3 and not dial_papi1 then
+    	dtb_disp("bonjour jeune homme!")
+    	dtb_disp("bonjour madame !",
+    	function()
+     sfx(44)
+					end)	
+				end
 end
 
 
@@ -198,6 +207,7 @@ end
 
 -->8
 --dialogues
+function dtb_init(n) dtb_q={}dtb_f={}dtb_n=3 if n then dtb_n=n end _dtb_c() end function dtb_disp(t,c)local s,l,w,h,u s={}l=""w=""h=""u=function()if #w+#l>29 then add(s,l)l=""end l=l..w w=""end for i=1,#t do h=sub(t,i,i)w=w..h if h==" "then u()elseif #w>28 then w=w.."-"u()end end u()if l~=""then add(s,l)end add(dtb_q,s)if c==nil then c=0 end add(dtb_f,c)end function _dtb_c()dtb_d={}for i=1,dtb_n do add(dtb_d,"")end dtb_c=0 dtb_l=0 end function _dtb_l()dtb_c+=1 for i=1,#dtb_d-1 do dtb_d[i]=dtb_d[i+1]end dtb_d[#dtb_d]=""sfx(2)end function dtb_update()if #dtb_q>0 then if dtb_c==0 then dtb_c=1 end local z,x,q,c z=#dtb_d x=dtb_q[1]q=#dtb_d[z]c=q>=#x[dtb_c]if c and dtb_c>=#x then if btnp(4) then if dtb_f[1]~=0 then dtb_f[1]()end del(dtb_f,dtb_f[1])del(dtb_q,dtb_q[1])_dtb_c()sfx(2)return end elseif dtb_c>0 then dtb_l-=1 if not c then if dtb_l<=0 then local v,h v=q+1 h=sub(x[dtb_c],v,v)dtb_l=1 if h~=" " then sfx(0)end if h=="." then dtb_l=6 end dtb_d[z]=dtb_d[z]..h end if btnp(4) then dtb_d[z]=x[dtb_c]end else if btnp(4) then _dtb_l()end end end end end function dtb_draw()if #dtb_q>0 then local z,o z=#dtb_d o=0 if dtb_c<z then o=z-dtb_c end rectfill(2,125-z*8,125,125,0)if dtb_c>0 and #dtb_d[#dtb_d]==#dtb_q[1][dtb_c] then print("\x8e",118,120,1)end for i=1,z do print(dtb_d[i],4,i*8+119-(z+o)*8,7)end end end
 
 
 -->8
@@ -335,7 +345,7 @@ end
 function init_dialogue()
 	_update=update_dialogue
 	_draw=draw_dialogue
-	music()
+	music(1)
 end
 
 function uptade_dialogue()
@@ -343,7 +353,8 @@ function uptade_dialogue()
 end
 
 function draw_dialogue()
-	
+	cls()
+	mamie_parle()
 end
 
 function dialogue()
@@ -352,12 +363,12 @@ function dialogue()
 end
 
 function mamie_parle()
-	map(80,0)
+	map(76,0)
 	
 end
 
 function papie_parle()
-	map(96,0)
+	map(92,0)
 	
 end
 __gfx__
@@ -376,7 +387,7 @@ __gfx__
 0000000000001ccc99aa040000001cc199aa040000001ccc99a0000000001ccc99a0000000001ccc99aa000400899800b39b338b40e6e6e1c1666661cccccccc
 00000000000001cc1cc00400000001cc1cc00400000001cc1cc00000000001cc1cc00000000001cc1cc000040009a0003bb3bb33ffe66eeecc11111cccccc77c
 00000000000001c1c1c00400000001ccc1c00400000001c1c1c00000000001c1c1c00000000001c1c1c0000000066000b33b33b3f6696eeecccccccccccccccc
-000000000000011cc22004000000001ccc2204000000011cc22000000000011cc22000000000011cc220000000556600bb4455bb6feae6eecccccccccccccccc
+0000000000000122c22004000000001ccc2204000000011cc22000000000011cc22000000000011cc220000000556600bb4455bb6feae6eecccccccccccccccc
 bbbbbbbbbbbbbbbbbbbbbbbb766576659aaaaaaaaaaaaa90766576bbbbb57665cc4ccc6fff6cccccbbbbbbbbbbbbbbbbbb333bbbcc4ccc00000cccccbbbbbbbb
 b444444bbbbbbbabb8bbbbbb55565556aaaaaaaaaaaaa9905556555bb5565556c644c66fff66ccccbbbbbbbbbbbbbbbbb383333bc644c0000000cccc111111bb
 b455554bbbbbba7a898bbbbb66656665dddaaaaaaaaa999066656665b6656665c6c4c666f666ccccbb66ccbbbb33bbbbb333383bc6c4c0000000cccccccccc1b
@@ -620,7 +631,7 @@ __label__
 88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
 
 __gff__
-0000000000000000000000000001010100000000000000000000000001000101000000000101000001010400010101010000000000000000010102000001010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000001010100000000000000000000000001000101010000000101000001010400010101010000000000000000010102000001010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000200000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 24251c1c1c1c1f0f1f0f1f0f1f0f1f0f0f1f301c1c1c2c1c1c2c1c2c1c1c1c1ce6c0c1c2c3c4c5c6e6e6e6c7c7c7c7c7e6c0c1c2c3c4c5c6e6e6e6c7c7c7c7c73737000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c4d4e4f
