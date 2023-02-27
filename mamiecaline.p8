@@ -88,8 +88,8 @@ function interact(x,y)
     if check_flag(1,x+1,y+1) then
         pick_up_flower(x+1,y+1)
     end
-    if x==4 and y==7 and not pan1_read then
-    	create_msg("panneau","♥ola")
+    if x==4 and y==6 and not pan1_read then
+    	create_msg("distributeur de disquettes","je suis pas un genie mais je peux\nfaire de tes reves une realite")
     	pan1_read = true
     end
     if x==7 and y==3 and not pan2_read then
@@ -170,8 +170,15 @@ end
 
 function draw_msg()
 	if messages[1] then
-		print(messages[1],0,60,7)
-		end
+		local y=100
+		--titre
+		rectfill(7,y,11+#msg_title*4,y+7,8)
+		print(msg_title,10,y+2,15)
+		--message
+		rectfill(3,y+8,124,y+24,7)
+		rect(3,y+8,124,y+24,8)
+		print(messages[1],6,y+11,8)
+	end
 end
 -->8
 --main menu
