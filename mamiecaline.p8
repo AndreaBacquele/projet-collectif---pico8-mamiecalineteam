@@ -49,6 +49,7 @@ function create_player()
     y=1,
     sprite=1,
     speed=1,
+    running=false,
     flower=0,
     vgr=0
     }
@@ -57,6 +58,15 @@ end
 function draw_player()
  spr(p.sprite,p.x*8,p.y*8,2,2,p.flip)
 end
+
+function runGranny()
+    p.running=true
+    p.sprite+=2
+    if p.sprite>3
+    then    
+        p.sprite=1
+    end 
+end 
 
 function player_mouvement()
     newx=p.x
@@ -72,6 +82,10 @@ function player_mouvement()
         p.x=mid(0,newx,127)
         p.y=mid(0,newy,63)
     --ajout else sfx(numero du son)
+    end
+
+    if (btnp(⬆️)) or (btnp(⬇️)) or (btnp(⬅️)) or (btnp(➡️))
+    then runGranny()
     end
 end
 
