@@ -20,6 +20,7 @@ function init_game()
 		create_player()
 		init_msg()
 
+
 		music(0)
 
 end
@@ -40,6 +41,7 @@ function update_game()
 	end
 	update_camera()
 	update_msg()
+
 end
 
 -->8
@@ -52,6 +54,7 @@ function create_player()
     sprite=1,
     speed=1,
     running=false,
+    dial_papi=0,
     flower=0,
     vgr=0
     }
@@ -213,7 +216,7 @@ end
 
 -->8
 --dialogues
-function dtb_init(n) dtb_q={}dtb_f={}dtb_n=3 if n then dtb_n=n end _dtb_c() end function dtb_disp(t,c)local s,l,w,h,u s={}l=""w=""h=""u=function()if #w+#l>29 then add(s,l)l=""end l=l..w w=""end for i=1,#t do h=sub(t,i,i)w=w..h if h==" "then u()elseif #w>28 then w=w.."-"u()end end u()if l~=""then add(s,l)end add(dtb_q,s)if c==nil then c=0 end add(dtb_f,c)end function _dtb_c()dtb_d={}for i=1,dtb_n do add(dtb_d,"")end dtb_c=0 dtb_l=0 end function _dtb_l()dtb_c+=1 for i=1,#dtb_d-1 do dtb_d[i]=dtb_d[i+1]end dtb_d[#dtb_d]=""sfx(2)end function dtb_update()if #dtb_q>0 then if dtb_c==0 then dtb_c=1 end local z,x,q,c z=#dtb_d x=dtb_q[1]q=#dtb_d[z]c=q>=#x[dtb_c]if c and dtb_c>=#x then if btnp(4) then if dtb_f[1]~=0 then dtb_f[1]()end del(dtb_f,dtb_f[1])del(dtb_q,dtb_q[1])_dtb_c()sfx(2)return end elseif dtb_c>0 then dtb_l-=1 if not c then if dtb_l<=0 then local v,h v=q+1 h=sub(x[dtb_c],v,v)dtb_l=1 if h~=" " then sfx(0)end if h=="." then dtb_l=6 end dtb_d[z]=dtb_d[z]..h end if btnp(4) then dtb_d[z]=x[dtb_c]end else if btnp(4) then _dtb_l()end end end end end function dtb_draw()if #dtb_q>0 then local z,o z=#dtb_d o=0 if dtb_c<z then o=z-dtb_c end rectfill(2,125-z*8,125,125,0)if dtb_c>0 and #dtb_d[#dtb_d]==#dtb_q[1][dtb_c] then print("\x8e",118,120,1)end for i=1,z do print(dtb_d[i],4,i*8+119-(z+o)*8,7)end end end
+
 
 
 
@@ -355,13 +358,16 @@ function init_dialogue()
 	music(1)
 end
 
-function uptade_dialogue()
-	
+function update_dialogue()
+	 update_msg()
+	 first_dial()
 end
 
 function draw_dialogue()
 	cls()
+	camera()
 	mamie_parle()
+	draw_msg()
 end
 
 function dialogue()
@@ -370,14 +376,29 @@ function dialogue()
 end
 
 function mamie_parle()
-	map(76,0)
+	map(80,0)
+	return true
 	
 end
 
-function papie_parle()
-	map(92,0)
+function papi_parle()
+	map(96,0)
+	return true
 	
 end
+
+function first_dial()
+	if p.dial_papi==0 and p.flower==0 and p.vgr==0 and not deja_lu
+	then create_msg("mamie","salut bg", "ca farte?")					
+ deja_lu =true 
+ end
+ if #messages==0 and (btnp (❎))
+ then create_msg("papi","va-t'en")
+ end
+ dial_papi+=1
+end
+
+
 __gfx__
 000000000007700000000000000077000000000000077000000000000007700000000000000770000000000000000000cccccccccccccccccccccccccccccccc
 000000000007277777000000000072777770000000072777770004000007277777000000000727777700000000000000cccccccccccc21cccccccccccccccccc
