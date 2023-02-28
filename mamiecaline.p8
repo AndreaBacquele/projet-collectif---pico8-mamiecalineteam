@@ -4,6 +4,8 @@ __lua__
 --init
 
 function _init()
+    create_player()
+    msg_depart=false
 	init_menu()	
 end
 
@@ -17,22 +19,20 @@ end
 
 
 function init_game()
-		create_player()
-		init_msg()
-
-
-		music(0)
-
+    messages={}
+    _update = update_game
+    _draw = draw_game
+    music(0)
 end
 
 
 function draw_game()
 
 	draw_map()
- draw_player()
- draw_msg()
- draw_ui_flower()
- draw_ui_vgr()
+    draw_player()
+    draw_msg()
+    draw_ui_flower()
+    draw_ui_vgr()
 end
 
 function update_game()
@@ -44,19 +44,42 @@ function update_game()
 
 end
 
+function create_msg(name,...)
+	msg_title=name
+	messages={...}
+end
+
+dialogs = {
+    first_dialog = {
+        {name="mamie", message="salut bg"},
+        {name="mamie", message="ca farte ?"},
+        {name="papi", message="va-t-en"},
+        {name="mamie", message=":("},
+    },
+    second_dialog = {
+        {name="mamie", message="aller"},
+        {name="papi", message="non"},
+    },
+    flower_dialog = {
+        {name = "papi", message= "oh ?! c'est pour moi ? "},
+        {name = "mamie", message= "oui, ca te plait ?"},
+    }
+}
+
 -->8
 --player
 
 function create_player()
     p={
-    x=1,
-    y=1,
-    sprite=1,
-    speed=1,
-    running=false,
-    dial_papi=0,
-    flower=0,
-    vgr=0
+        x=1,
+        y=1,
+        sprite=1,
+        speed=1,
+        running=false,
+        dial_papi=0,
+        flower=0,
+        vgr=0,
+        current_dialog=nil
     }
 end
 
@@ -94,32 +117,7 @@ function player_mouvement()
     end
 end
 
-function interact(x,y)
-    if check_flag(1,x,y) then
-        pick_up_flower(x,y)
-    end
-    if check_flag(1,x+1,y) then
-        pick_up_flower(x+1,y)
-    end
-    if check_flag(1,x,y+1) then
-        pick_up_flower(x,y+1)
-    end
-    if check_flag(1,x+1,y+1) then
-        pick_up_flower(x+1,y+1)
-    end
-    
-    if check_flag(2,x,y) then
-        pick_up_vgr(x,y)
-    end
-    if check_flag(2,x+1,y) then
-        pick_up_vgr(x+1,y)
-    end
-    if check_flag(2,x,y+1) then
-        pick_up_vgr(x,y+1)
-    end
-    if check_flag(2,x+1,y+1) then
-        pick_up_vgr(x+1,y+1)
-    end
+function interact_panneau(x, y)
     if x==4 and y==6 then
     	create_msg("match un vieux.com","finito le tricot\nil est temps de pecho")
     end
@@ -154,6 +152,35 @@ function interact(x,y)
     if x==2 and y==20 then
     	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
     end
+end
+
+function interact(x,y)
+    if check_flag(1,x,y) then
+        pick_up_flower(x,y)
+    end
+    if check_flag(1,x+1,y) then
+        pick_up_flower(x+1,y)
+    end
+    if check_flag(1,x,y+1) then
+        pick_up_flower(x,y+1)
+    end
+    if check_flag(1,x+1,y+1) then
+        pick_up_flower(x+1,y+1)
+    end
+    
+    if check_flag(2,x,y) then
+        pick_up_vgr(x,y)
+    end
+    if check_flag(2,x+1,y) then
+        pick_up_vgr(x+1,y)
+    end
+    if check_flag(2,x,y+1) then
+        pick_up_vgr(x,y+1)
+    end
+    if check_flag(2,x+1,y+1) then
+        pick_up_vgr(x+1,y+1)
+    end
+    interact_panneau(x, y)
     
     if y==3 and x>=0 and x<=4 
     and not msg_depart then
@@ -170,12 +197,33 @@ function interact(x,y)
    		msg_depart=true
     end
     --dialogue papie
-    if x==11 and y==3 then
-    create_msg("1ere rencontre", "mamie : bonjour jeune homme !","papie : bonjour madame !")
-    dialmamie = true
+    interact_dialog(x, y)
+    if p.current_dialog != nil then
+        init_dialogue()
     end
-    if dialmamie and btnp(❎) then 
-    init_dialogue()
+end
+
+
+function interact_dialog(x, y)
+    -- choisir si il faut afficher un dialog en fonction de la position (x, y) et du contexte (joueur, objets, ...)
+    if x!=11 or y!=3 then
+        -- pas sur papi
+        p.current_dialog = nil
+        return
+    end
+    -- je suis sur papi
+    if p.dial_papi==0 then
+        -- je n'ai jamais parlé à papi
+        p.current_dialog = dialogs.first_dialog
+        return
+    end
+    if p.dial_papi==1 then 
+        p.current_dialog = dialogs.second_dialog
+        return
+    end
+    if p.dial_papi>0 and p.flower ==1 then
+        p.current_dialog = dialogs.flower_dialog
+        return
     end
 end
 
@@ -272,15 +320,6 @@ end
 -->8
 --messages in game
 
-function init_msg()
-	messages={}
-end
-
-function create_msg(name,...)
-	msg_title=name
-	messages={...}
-end
-
 function update_msg()
 	if (btnp(❎)) then
 		deli(messages,1)
@@ -288,7 +327,7 @@ function update_msg()
 end
 
 function draw_msg()
-camera()
+    camera()
 	if messages[1] then
 		local y=100
 		--titre
@@ -340,8 +379,6 @@ function update_menu()
  
  if btnp(❎) then 
 		init_game()
-		_update = update_game
-		_draw = draw_game
 	end
 
 end
@@ -353,50 +390,54 @@ end
 --page dialogue
 
 function init_dialogue()
+    -- change les fonctions de mise à jour/dessin pour basucler en mode dialogue
 	_update=update_dialogue
 	_draw=draw_dialogue
 	music(1)
 end
 
 function update_dialogue()
-	 update_msg()
-	 first_dial()
+	if (btnp(❎)) then
+        -- message suivant
+		deli(p.current_dialog,1)
+	end
+    if #p.current_dialog == 0 then
+        p.dial_papi +=1
+        -- le dialog est fini, on remet le jeu
+        init_game()
+    end
 end
 
 function draw_dialogue()
 	cls()
-	camera()
-	mamie_parle()
-	draw_msg()
-end
-
-function dialogue()
-	map(64,0)
-	
+    local title = p.current_dialog[1].name
+    local msg = p.current_dialog[1].message
+    if title == "mamie" then
+        mamie_parle()
+    else
+        papi_parle()
+    end
+    camera()
+    local y=100
+    --titre
+    rectfill(7,y,11+#title*4,y+7,8)
+    print(title,10,y+2,15)
+    --message
+    rectfill(3,y+8,124,y+24,7)
+    rect(3,y+8,124,y+24,8)
+    print(msg,6,y+11,8)
 end
 
 function mamie_parle()
 	map(80,0)
 	return true
-	
 end
 
 function papi_parle()
 	map(96,0)
 	return true
-	
 end
 
-function first_dial()
-	if p.dial_papi==0 and p.flower==0 and p.vgr==0 and not deja_lu
-	then create_msg("mamie","salut bg", "ca farte?")					
- deja_lu =true 
- end
- if #messages==0 and (btnp (❎))
- then create_msg("papi","va-t'en")
- end
- dial_papi+=1
-end
 
 
 __gfx__
