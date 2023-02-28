@@ -124,7 +124,7 @@ function interact(x,y)
     	create_msg("match un vieux.com","pour pecho les vieux du coin,\nne vient pas les mains vides")
     end
     if x==13 and y==6 then
-    	create_msg("disquettes a la demande","l'♥ ne tient qu'a un fil,\nfais-en un pull.")
+    	create_msg("disquettes a la demande","pour toi je decrocherai la lune sans la fusee.")
     end
     
     if x==20 and y==18 then
@@ -153,7 +153,21 @@ function interact(x,y)
     
     if x==2 and y==20 then
     	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
-  
+    end
+    
+    if y==3 and x>=0 and x<=4 
+    and not msg_depart then
+    	create_msg("match un vieux.com",
+    	"bienvenue mamie caline !", 
+    	"aujourd'hui est le premier\njour du reste de ta...", 
+    	"...courte, mais non moins\npassionnante, vie !",
+    	"il est (largement) temps\nde remonter en selle...",
+    	"et de retrouver l'amour,\nla fougue et la passion !",
+    	"et comme le disait\nun grand philosophe :",
+    	"il n'y a pas que\ndans les crematoriums",
+    	"que l'on trouve de la\nchaleur humaine !",
+    	"c'est parti !") 
+   		msg_depart=true
     end
     --dialogue papie
     if x==11 and y==3 and not dial_papi1 then
