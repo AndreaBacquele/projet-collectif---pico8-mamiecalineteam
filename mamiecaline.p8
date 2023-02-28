@@ -133,17 +133,14 @@ function interact(x,y)
     
      if x==23 and y==22 then
     	create_msg("match un vieux.com","trouve la pillule bleue pour\nfaire chauffer le moteur")
-    	
     end
     
      if x==6 and y==22 then
     	create_msg("match un vieux.com","vous pouvez aussi, essayer de\nle dire avec des fleurs")
-    	
     end
     
     if x==11 and y==18 then
-    	create_msg("match un vieux.com","vous avez essaye les nudes ?")
-    	
+    	create_msg("match un vieux.com","vous avez essaye les nudes ?")   	
     end
     
      if x==16 and y==30 then
@@ -170,13 +167,13 @@ function interact(x,y)
    		msg_depart=true
     end
     --dialogue papie
-    if x==11 and y==3 and not dial_papi1 then
-    	dtb_disp("bonjour jeune homme!")
-    	dtb_disp("bonjour madame !",
-    	function()
-     sfx(44)
-					end)	
-				end
+    if x==11 and y==3 then
+    create_msg("1ere rencontre", "mamie : bonjour jeune homme !","papie : bonjour madame !")
+    dialmamie = true
+    end
+    if dialmamie and btnp(❎) then 
+    init_dialogue()
+    end
 end
 
 
