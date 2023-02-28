@@ -124,7 +124,7 @@ function interact(x,y)
     	create_msg("match un vieux.com","pour pecho les vieux du coin,\nne vient pas les mains vides")
     end
     if x==13 and y==6 then
-    	create_msg("disquettes a la demande","pour toi je decrocherai la lune sans la fusee.")
+    	create_msg("disquettes a la demande","pour toi je decrocherai la\nlune sans la fusee.")
     end
     
     if x==20 and y==18 then
@@ -142,7 +142,7 @@ function interact(x,y)
     end
     
     if x==11 and y==18 then
-    	create_msg("match un vieux.com","vous connaissez les nudes ?")
+    	create_msg("match un vieux.com","vous avez essaye les nudes ?")
     	
     end
     
@@ -309,8 +309,8 @@ local screen_flip_interval = 0.5
 function mainmenu1()
     cls()
 	map(32,0)
-	print("press ❎ to",75,42,0)
-    print("leave the house",65,50,0)
+	print("press ❎ to",75,42,7)
+    print("leave the house",65,50,7)
 end
 
 function mainmenu2()
