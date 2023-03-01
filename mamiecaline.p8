@@ -63,6 +63,10 @@ dialogs = {
     flower_dialog = {
         {name = "papi", message= "oh ?! c'est pour moi ? "},
         {name = "mamie", message= "oui, ca te plait ?"},
+    },
+    vgr_dialog = {
+        {name = "papi", message= "tu sais parler aux hommes granny"},
+        {name = "mamie", message = "veux-tu faire un petit bout de chemin avec moi ?"},
     }
 }
 
@@ -146,7 +150,6 @@ function interact_panneau(x, y)
     
      if x==16 and y==30 then
     	create_msg("match un vieux.com","en amour, parfois,\nil faut se jeter a l'eau")
-    	
     end
     
     if x==2 and y==20 then
@@ -213,7 +216,7 @@ function interact_dialog(x, y)
     end
     -- je suis sur papi
     if p.dial_papi==0 then
-        -- je n'ai jamais parlé à papi
+        -- je n'ai jamais parlれた れき papi
         p.current_dialog = dialogs.first_dialog
         return
     end
@@ -225,12 +228,16 @@ function interact_dialog(x, y)
         p.current_dialog = dialogs.flower_dialog
         return
     end
+    if p.dial_papi>0 and p.vgr == 1 then
+        p.currrent_dialog = dialogs.vgr_dialog
+        return
+    end
 end
 
 
 --ui
 
---afficher compteur de coeurs
+--afficher compteur d'items
 function draw_ui_flower()
 	camera()
 	
@@ -309,13 +316,14 @@ end
 function pick_up_flower(x,y)
  next_tile(x,y)
  p.flower+=1
+ sfx(23)
  
 end
 
 function pick_up_vgr(x,y)
  next_tile(x,y)
  p.vgr+=1
-
+ sfx(23)
 end
 -->8
 --messages in game
@@ -337,6 +345,7 @@ function draw_msg()
 		rectfill(3,y+8,124,y+24,7)
 		rect(3,y+8,124,y+24,8)
 		print(messages[1],6,y+11,8)
+        print("❎ ",116,y+18,5)
 	end
 end
 -->8
@@ -390,7 +399,7 @@ end
 --page dialogue
 
 function init_dialogue()
-    -- change les fonctions de mise à jour/dessin pour basucler en mode dialogue
+    -- change les fonctions de mise れき jour/dessin pour basucler en mode dialogue
 	_update=update_dialogue
 	_draw=draw_dialogue
 	music(1)
@@ -430,11 +439,13 @@ end
 
 function mamie_parle()
 	map(80,0)
+    print("press ❎ ",116,y+16,5)
 	return true
 end
 
 function papi_parle()
 	map(96,0)
+    print("press ❎ ",116,y+16,5)
 	return true
 end
 
@@ -759,6 +770,7 @@ __sfx__
 000a1d0018544000000000000000185540000000000000000a5540a5500a5500a5501654400000000000000016554000000000000000085540855008550085501654400000000000000016554014000140001400
 000a1d002044400000000000000020454000000000000000000000000000000000001d4440000000000000001d454000000000000000000000000000000000002244400000000000000022454014000140001400
 080a1f00267600000027760000002976000000267600000013760000001676000000137600000018760000001a760000001b760000001d7600000016760000001a760000001b760000001d760000001a76001400
+00030000000000b5500e55015550195501f550245502b550315503255000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 02 00014746
 00 02030405
