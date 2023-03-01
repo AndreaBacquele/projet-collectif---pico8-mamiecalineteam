@@ -52,22 +52,45 @@ end
 
 dialogs = {
     first_dialog = {
-        {name="mamie", message="salut bg"},
-        {name="mamie", message="ca farte ?"},
-        {name="papi", message="va-t-en"},
-        {name="mamie", message=":("},
+        {name="mamie", message="bonjour jeune-homme !"},
+        {name="mamie", message="quelle belle\njournee pour pecher !"},
+        {name="papi", message="hum... bonjour...\nje suis un peu occupe la"},
+        {name="mamie", message=":'("},
     },
     second_dialog = {
-        {name="mamie", message="aller"},
-        {name="papi", message="non"},
+        {name="mamie", message="alors, ca mord ?"},
+        {name="papi", message="hum..."},
+        {name="papi", message="vous n'iriez pas faire\nun tour ?"},
     },
+
     flower_dialog = {
-        {name = "papi", message= "oh ?! c'est pour moi ? "},
-        {name = "mamie", message= "oui, ca te plait ?"},
+        {name = "papi", message= "oh les belles fleurs !"},
+        {name = "papi", message= "c'est pour moi ?"},
+        {name = "mamie", message= "oui, et vous savez\nce qu'on dit..."},
+        {name = "mamie", message= "chaque fleur attire\nsa mouche... "},
+        {name = "papi", message= "et moi... je peche\ntoujours a la mouche ! "},
+        {name = "mamie", message= "vous etes un homme charmant !"},
+        {name = "mamie", message= "que diriez-vous d'aller\nvous promener ?"},
+        {name = "papi", message= "je ne sais pas trop...\nles carpes m'attendent..."},
+        {name = "papi", message= "revenez un peu plus tard..."},
+        {name = "papi", message= "peut-etre que vous aurez\nplus de chance..."},
     },
+
     vgr_dialog = {
-        {name = "papi", message= "tu sais parler aux hommes granny"},
-        {name = "mamie", message = "veux-tu faire un petit bout de chemin avec moi ?"},
+        {name = "mamie", message= "j'ai trouve de quoi vous\nmotiver..!"},
+        {name = "papi", message= "oh des vitamines bleues,\nmes preferees !!!!"},
+        {name = "papi", message= "mais... ca va peut-etre\nun peu vite entre nous"},
+        {name = "mamie", message= "vous avez raison...\nj'oublie mes manieres"},
+        {name = "mamie", message= "mais je n'ai pas dit\nmon dernier mot..."},
+    },
+
+    flower_vgr_dialog = {
+        {name = "mamie", message= "me revoila !"},
+        {name = "mamie", message= "avec des fleurs\net des vitamines bleues !"},
+        {name = "papi", message= "*gloups*"},
+        {name = "papi", message= "il fait chaud non ?\non n'irait pas..."},
+        {name = "papi", message= "chez vous ?"},
+        {name = "mamie", message= ":))))"},
     }
 }
 
@@ -225,12 +248,16 @@ function interact_dialog(x, y)
         p.current_dialog = dialogs.second_dialog
         return
     end
-    if p.dial_papi>0 and p.flower ==1 then
+    if p.dial_papi>0 and p.flower ==1 and p.vgr==0 then
         p.current_dialog = dialogs.flower_dialog
         return
     end
-    if p.dial_papi>0 and p.vgr == 1 then
-        p.currrent_dialog = dialogs.vgr_dialog
+    if p.dial_papi>0 and p.vgr ==1 and p.flower==0 then
+        p.current_dialog = dialogs.vgr_dialog
+        return
+    end
+    if p.dial_papi>0 and p.vgr ==1 and p.flower==1 then
+        p.current_dialog = dialogs.flower_vgr_dialog
         return
     end
 end
