@@ -2,9 +2,459 @@ pico-8 cartridge // http://www.pico-8.com
 version 38
 __lua__
 
+--init
+
+function _init()
+    create_player()
+    msg_depart=false
+	init_menu()	
+end
+
+function _draw()
+	
+end
+
+function _update()
+	
+end
+
+
+function init_game()
+    messages={}
+    _update = update_game
+    _draw = draw_game
+    music(0)
+end
+
+
+function draw_game()
+
+	draw_map()
+    draw_player()
+    draw_msg()
+    draw_ui_flower()
+    draw_ui_vgr()
+end
+
+function update_game()
+	if #messages==0 then
+		player_mouvement()
+	end
+	update_camera()
+	update_msg()
+
+end
+
+function create_msg(name,...)
+	msg_title=name
+	messages={...}
+end
+
+dialogs = {
+    first_dialog = {
+        {name="mamie", message="salut bg"},
+        {name="mamie", message="ca farte ?"},
+        {name="papi", message="va-t-en"},
+        {name="mamie", message=":("},
+    },
+    second_dialog = {
+        {name="mamie", message="aller"},
+        {name="papi", message="non"},
+    },
+    flower_dialog = {
+        {name = "papi", message= "oh ?! c'est pour moi ? "},
+        {name = "mamie", message= "oui, ca te plait ?"},
+    },
+    vgr_dialog = {
+        {name = "papi", message= "tu sais parler aux hommes granny"},
+        {name = "mamie", message = "veux-tu faire un petit bout de chemin avec moi ?"},
+    }
+}
+
+-->8
+--player
+
+function create_player()
+    p={
+        x=1,
+        y=1,
+        sprite=1,
+        speed=1,
+        running=false,
+        dial_papi=0,
+        flower=0,
+        vgr=0,
+        current_dialog=nil
+    }
+end
+
+function draw_player()
+ spr(p.sprite,p.x*8,p.y*8,2,2,p.flip)
+end
+
+function runGranny()
+    p.running=true
+    p.sprite+=2
+    if p.sprite>3
+    then    
+        p.sprite=1
+    end 
+end 
+
+function player_mouvement()
+    newx=p.x
+    newy=p.y
+	if (btnp(⬆️)) newy-=p.speed
+	if (btnp(⬇️)) newy+=p.speed
+	if (btnp(⬅️)) newx-=p.speed p.flip=true
+	if (btnp(➡️)) newx+=p.speed p.flip=false
+
+    interact(newx, newy)
+    --a ajuster en fonction de la taille de la map (voir si ajout d'un son quand on rencontre un obstacle)
+    if not check_flag4(0,newx,newy) then
+        p.x=mid(0,newx,127)
+        p.y=mid(0,newy,63)
+    --ajout else sfx(numero du son)
+    end
+
+    if (btnp(⬆️)) or (btnp(⬇️)) or (btnp(⬅️)) or (btnp(➡️))
+    then runGranny()
+    end
+end
+
+function interact_panneau(x, y)
+    if x==4 and y==6 then
+    	create_msg("match un vieux.com","finito le tricot\nil est temps de pecho")
+    end
+    if x==7 and y==3 then
+    	create_msg("match un vieux.com","pour pecho les vieux du coin,\nne vient pas les mains vides")
+    end
+    if x==13 and y==6 then
+    	create_msg("disquettes a la demande","pour toi je decrocherai la\nlune sans la fusee.")
+    end
+    
+    if x==20 and y==18 then
+    	create_msg("disquettes a la demande","tu sortirais pas du frigo ?\npcq t'es trop fraiche!")
+    end
+    
+     if x==23 and y==22 then
+    	create_msg("match un vieux.com","trouve la pillule bleue pour\nfaire chauffer le moteur")
+    end
+    
+     if x==6 and y==22 then
+    	create_msg("match un vieux.com","vous pouvez aussi, essayer de\nle dire avec des fleurs")
+    end
+    
+    if x==11 and y==18 then
+    	create_msg("match un vieux.com","vous avez essaye les nudes ?")   	
+    end
+    
+     if x==16 and y==30 then
+    	create_msg("match un vieux.com","en amour, parfois,\nil faut se jeter a l'eau")
+    end
+    
+    if x==2 and y==20 then
+    	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
+    end
+end
+
+function interact(x,y)
+    if check_flag(1,x,y) then
+        pick_up_flower(x,y)
+    end
+    if check_flag(1,x+1,y) then
+        pick_up_flower(x+1,y)
+    end
+    if check_flag(1,x,y+1) then
+        pick_up_flower(x,y+1)
+    end
+    if check_flag(1,x+1,y+1) then
+        pick_up_flower(x+1,y+1)
+    end
+    
+    if check_flag(2,x,y) then
+        pick_up_vgr(x,y)
+    end
+    if check_flag(2,x+1,y) then
+        pick_up_vgr(x+1,y)
+    end
+    if check_flag(2,x,y+1) then
+        pick_up_vgr(x,y+1)
+    end
+    if check_flag(2,x+1,y+1) then
+        pick_up_vgr(x+1,y+1)
+    end
+    interact_panneau(x, y)
+    
+    if y==3 and x>=0 and x<=4 
+    and not msg_depart then
+    	create_msg("match un vieux.com",
+    	"bienvenue mamie caline !", 
+    	"aujourd'hui est le premier\njour du reste de ta...", 
+    	"...courte, mais non moins\npassionnante, vie !",
+    	"il est (largement) temps\nde remonter en selle...",
+    	"et de retrouver l'amour,\nla fougue et la passion !",
+    	"et comme le disait\nun grand philosophe :",
+    	"il n'y a pas que\ndans les crematoriums",
+    	"que l'on trouve de la\nchaleur humaine !",
+    	"c'est parti !") 
+   		msg_depart=true
+    end
+    --dialogue papie
+    interact_dialog(x, y)
+    if p.current_dialog != nil then
+        init_dialogue()
+    end
+end
+
+
+function interact_dialog(x, y)
+    -- choisir si il faut afficher un dialog en fonction de la position (x, y) et du contexte (joueur, objets, ...)
+    if x!=11 or y!=3 then
+        -- pas sur papi
+        p.current_dialog = nil
+        return
+    end
+    -- je suis sur papi
+    if p.dial_papi==0 then
+        -- je n'ai jamais parlれた れき papi
+        p.current_dialog = dialogs.first_dialog
+        return
+    end
+    if p.dial_papi==1 then 
+        p.current_dialog = dialogs.second_dialog
+        return
+    end
+    if p.dial_papi>0 and p.flower ==1 then
+        p.current_dialog = dialogs.flower_dialog
+        return
+    end
+    if p.dial_papi>0 and p.vgr == 1 then
+        p.currrent_dialog = dialogs.vgr_dialog
+        return
+    end
+end
+
+
+--ui
+
+--afficher compteur d'items
+function draw_ui_flower()
+	camera()
+	
+	palt(0,false)
+	palt(4,true)
+	spr(143,2,2)
+	
+	palt()
+	
+	print_outline("X"..p.flower,10,2)
+end
+
+function draw_ui_vgr()
+	camera()
+	
+	palt(0,false)
+	palt(4,true)
+	spr(159,2,10)
+	
+	palt()
+	print_outline("X"..p.vgr,10,10)
+end
+
+function print_outline(text,x,y)
+	print(text,x-1,y,0)
+	print(text,x+1,y,0)
+	print(text,x,y-1,0)
+	print(text,x,y+1,0)
+	print(text,x,y,7)
+end
+
+-->8
+--dialogues
+
+
+
+
+-->8
+--map
+
+function draw_map()
+				cls()
+    map(0,0,0,0,31,41)
+    end
+    
+function update_camera()
+	local camx=mid(0,p.x-7.5,31-15) 
+	local camy=mid(0,p.y-7.5,41-15)
+	--position ou se pose la camera
+ camera(camx*8,camy*8)
+end
+
+ --permet de vれたrifier si on peut marcher ou s'il y a un objet- renvoie true or false
+function check_flag(flag,x,y)
+    local sprite=mget(x,y,w,h)
+    return	fget(sprite,flag)
+   end
+
+function check_flag4(flag,x,y)
+    local sprite1=mget(x,y)
+    local sprite2=mget(x+1,y)
+    local sprite3=mget(x,y+1)
+    local sprite4=mget(x+1,y+1)
+    local check=fget(sprite1,flag) or fget(sprite2,flag) or fget(sprite3,flag) or fget(sprite4,flag)
+    return check
+        
+end
+
+--permet de modifier un bout de map apres avoir ramasse un objet
+function next_tile(x,y)
+	local sprite=mget(x,y)
+	mset(x,y,sprite+1)
+end 
+
+--permet de ramasser l'objet (penser れき rajouter un son sfx() )
+function pick_up_flower(x,y)
+ next_tile(x,y)
+ p.flower+=1
+ sfx(23)
+ 
+end
+
+function pick_up_vgr(x,y)
+ next_tile(x,y)
+ p.vgr+=1
+ sfx(23)
+end
+-->8
+--messages in game
+
+function update_msg()
+	if (btnp(❎)) then
+		deli(messages,1)
+		end
+end
+
+function draw_msg()
+    camera()
+	if messages[1] then
+		local y=100
+		--titre
+		rectfill(7,y,11+#msg_title*4,y+7,8)
+		print(msg_title,10,y+2,15)
+		--message
+		rectfill(3,y+8,124,y+24,7)
+		rect(3,y+8,124,y+24,8)
+		print(messages[1],6,y+11,8)
+        print("❎ ",116,y+18,5)
+	end
+end
+-->8
+--main menu
+local current_screen = 1
+local last_screen_flip_time = 0
+local screen_flip_interval = 0.5
+
+function mainmenu1()
+    cls()
+	map(32,0)
+	print("press ❎ to",75,42,7)
+    print("leave the house",65,50,7)
+end
+
+function mainmenu2()
+    cls()
+    map(48,0)
+end
+
+function init_menu()
+	_update = update_menu
+	_draw = draw_menu
+	music(1)
+end
+
+function draw_menu()
+	if current_screen == 1 then
+    mainmenu1()
+  else
+    mainmenu2()
+  end
+end
+
+function update_menu()
+ if (time() - last_screen_flip_time) >= screen_flip_interval then
+    current_screen = 3 - current_screen
+    last_screen_flip_time = time()
+ end
+ 
+ if btnp(❎) then 
+		init_game()
+	end
+
+end
+-->8
+--coup de canne
+
+
+-->8
+--page dialogue
+
+function init_dialogue()
+    -- change les fonctions de mise れき jour/dessin pour basucler en mode dialogue
+	_update=update_dialogue
+	_draw=draw_dialogue
+	music(1)
+end
+
+function update_dialogue()
+	if (btnp(❎)) then
+        -- message suivant
+		deli(p.current_dialog,1)
+	end
+    if #p.current_dialog == 0 then
+        p.dial_papi +=1
+        -- le dialog est fini, on remet le jeu
+        init_game()
+    end
+end
+
+function draw_dialogue()
+	cls()
+    local title = p.current_dialog[1].name
+    local msg = p.current_dialog[1].message
+    if title == "mamie" then
+        mamie_parle()
+    else
+        papi_parle()
+    end
+    camera()
+    local y=100
+    --titre
+    rectfill(7,y,11+#title*4,y+7,8)
+    print(title,10,y+2,15)
+    --message
+    rectfill(3,y+8,124,y+24,7)
+    rect(3,y+8,124,y+24,8)
+    print(msg,6,y+11,8)
+end
+
+function mamie_parle()
+	map(80,0)
+    print("press ❎ ",116,y+16,5)
+	return true
+end
+
+function papi_parle()
+	map(96,0)
+    print("press ❎ ",116,y+16,5)
+	return true
+end
+=======
+
 -->8
 
 -->8
+
 
 
 
@@ -328,9 +778,12 @@ __sfx__
 000a1d0018544000000000000000185540000000000000000a5540a5500a5500a5501654400000000000000016554000000000000000085540855008550085501654400000000000000016554014000140001400
 000a1d002044400000000000000020454000000000000000000000000000000000001d4440000000000000001d454000000000000000000000000000000000002244400000000000000022454014000140001400
 080a1f00267600000027760000002976000000267600000013760000001676000000137600000018760000001a760000001b760000001d7600000016760000001a760000001b760000001d760000001a76001400
+
+00030000000000b5500e55015550195501f550245502b550315503255000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 021c00241113411124111341211411124120000000011134111441111412124131341200012000110001013411144001040010011144111441110412124000000000000000111341113411134121440300000000
 031900241a1341a1241a1341a1141c124120000000016134161441811419124181341200012000110001613417144001040010017144181441912418124000000000000000161341613418134161440300000000
+
 __music__
 02 00014746
 00 02030405
