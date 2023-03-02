@@ -180,6 +180,10 @@ function interact_panneau(x, y)
     if x==2 and y==20 then
     	create_msg("rodrigo","euh...ok pour un viager\nmais pas plus granny !")
     end
+
+    if x==1 and y==1 and p.vgr ==1 and p.flower==1 then
+    init_fin()
+    end
 end
 
 function interact(x,y)
@@ -479,6 +483,24 @@ function papi_parle()
 	return true
 end
 
+-->8
+--init_end
+
+function init_fin()
+_draw = draw_fin
+_update = update_fin
+music(1)
+end
+
+function draw_fin()
+cls()
+camera()
+map(112,0)
+end
+
+function update_fin()
+update_camera()
+end
 
 -->8
 
