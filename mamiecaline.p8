@@ -8,6 +8,7 @@ function _init()
     create_player()
     msg_depart=false
 	init_menu()	
+    resetMessage()
 end
 
 function _draw()
@@ -51,6 +52,7 @@ function create_msg(name,...)
 	messages={...}
 end
 
+function resetMessage ()
 dialogs = {
     first_dialog = {
         {name="mamie", message="bonjour jeune-homme !"},
@@ -94,6 +96,8 @@ dialogs = {
         {name = "mamie", message= ":))))"},
     }
 }
+
+end
 
 -->8
 --player
@@ -232,6 +236,7 @@ function interact(x,y)
     interact_dialog(x, y)
     if p.current_dialog != nil then
         init_dialogue()
+        resetMessage()
         music(-1)
     end
 end
